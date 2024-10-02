@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.custom-scrollbar {
+  scrollbar-width: none; /* For Firefox */
+}
+
+/* Fallback for other browsers (IE and Edge) */
+.custom-scrollbar {
+  -ms-overflow-style: none; /* For IE and Edge */
+  overflow-y: auto; /* Ensure scrollability */
+  touch-action: auto; /* Allow touch scrolling */
+  -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
+}
