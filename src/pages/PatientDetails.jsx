@@ -1,6 +1,6 @@
-import { useParams, Link } from "react-router-dom";
-import DashNav from "../components/DashNav";
-import { pdf } from "@react-pdf/renderer";
+import { useParams, Link } from 'react-router-dom';
+import DashNav from '../components/DashNav';
+import { pdf } from '@react-pdf/renderer';
 import {
   Label,
   TextInput,
@@ -9,21 +9,23 @@ import {
   ListGroup,
   Spinner,
   Button,
-} from "flowbite-react";
-import { usePatients } from "../store/patientsContext";
-import { HiUserGroup } from "react-icons/hi";
-import Error from "./Error";
-import MyDocument from "../components/MyDocumnet";
-import { useState } from "react";
-import Cmodal from "../components/Cmodal";
-import { getUserData } from "../util/authActions";
-import { useAuth } from "../store/authContext";
+} from 'flowbite-react';
+import { usePatients } from '../store/patientsContext';
+import { HiUserGroup } from 'react-icons/hi';
+import Error from './Error';
+import MyDocument from '../components/MyDocumnet';
+import { useEffect, useState } from 'react';
+import Cmodal from '../components/Cmodal';
+import { getUserData } from '../util/authActions';
+import { useAuth } from '../store/authContext';
+import FixedAlert from '../components/FixedAlert';
 export default function PatientDetails() {
   const { patients, loading } = usePatients();
+  const [missingInfo, setMissingInfo] = useState(false);
   const { currentUser } = useAuth();
   const { patientId } = useParams();
   const [printLoading, setPrintLoading] = useState(false);
-  const [inputs, setInputs] = useState([{ id: 1, value: "" }]);
+  const [inputs, setInputs] = useState([{ id: 1, value: '' }]);
   const [showRx, setShowRx] = useState(false);
   const [patient] = patients.filter(
     (patient) => patient.patientId === patientId
@@ -34,7 +36,7 @@ export default function PatientDetails() {
   );
 
   function addInput() {
-    setInputs([...inputs, { id: inputs.length + 1, value: "" }]);
+    setInputs([...inputs, { id: inputs.length + 1, value: '' }]);
   }
   const handleInputChange = (id, newValue) => {
     const updatedInputs = inputs.map((input) =>
@@ -43,31 +45,41 @@ export default function PatientDetails() {
     setInputs(updatedInputs);
   };
   const handlePrint = async () => {
-    setPrintLoading(true);
     const { data } = await getUserData(currentUser.uid);
-    const rx = inputs.map((input) => input.value);
-    const blob = await pdf(
-      <MyDocument key={Math.random()} user={data} rx={rx} patient={patient} />
-    ).toBlob();
-    const url = URL.createObjectURL(blob);
+    if (Object.values(data).every((value) => value !== '')) {
+      setPrintLoading(true);
+      const rx = inputs.map((input) => input.value);
+      const blob = await pdf(
+        <MyDocument key={Math.random()} user={data} rx={rx} patient={patient} />
+      ).toBlob();
+      const url = URL.createObjectURL(blob);
 
-    // Open the PDF in a new window/tab
-    const pdfWindow = window.open(url, "_blank");
+      // Open the PDF in a new window/tab
+      const pdfWindow = window.open(url, '_blank');
 
-    // Check if the new window/tab was successfully opened
-    if (pdfWindow) {
-      null;
+      // Check if the new window/tab was successfully opened
+      if (pdfWindow) {
+        null;
+      } else {
+        alert('Please allow popups for this website');
+      }
+      setPrintLoading(false);
     } else {
-      alert("Please allow popups for this website");
+      setMissingInfo(true);
     }
-    setPrintLoading(false);
   };
+  useEffect(() => {
+    if (missingInfo) {
+      const timer = setTimeout(() => setMissingInfo(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [missingInfo]);
   function handleAddRx() {
     setShowRx(true);
   }
   function hideModal() {
     setShowRx(false);
-    setInputs([{ id: 1, value: "" }]);
+    setInputs([{ id: 1, value: '' }]);
   }
   if (!loading && !patient) {
     return <Error message="Patient Not found." />;
@@ -88,7 +100,7 @@ export default function PatientDetails() {
           {loading ? (
             <div className="flex justify-center">
               <div>
-                <Spinner className="fill-blue-500"/>
+                <Spinner className="fill-blue-500" />
               </div>
             </div>
           ) : (
@@ -128,7 +140,7 @@ export default function PatientDetails() {
                   <Textarea
                     color="blue"
                     type="text"
-                    value={patient.historyOfIllness || "No history available"}
+                    value={patient.historyOfIllness || 'No history available'}
                     readOnly
                   />
                 </div>
@@ -138,7 +150,7 @@ export default function PatientDetails() {
                     color="blue"
                     type="text"
                     name="address_street"
-                    value={patient.pastvisit || "No past visit data"}
+                    value={patient.pastvisit || 'No past visit data'}
                     readOnly
                   />
                 </div>
@@ -154,7 +166,7 @@ export default function PatientDetails() {
                           href={value}
                           target="_blank"
                           className="break-words whitespace-normal overflow-hidden text-ellipsis"
-                          style={{ wordBreak: "break-all" }} // Ensure long words break
+                          style={{ wordBreak: 'break-all' }} // Ensure long words break
                         >
                           {key}
                         </ListGroup.Item>
@@ -175,6 +187,12 @@ export default function PatientDetails() {
         </Button>
       </div>
       <Cmodal openModal={showRx} hideModal={hideModal} size="xl">
+        {missingInfo && (
+          <FixedAlert
+            message="Please fill your information first."
+            success={false}
+          />
+        )}
         <div className="flex justify-start p-5 flex-col">
           <div>
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
@@ -207,8 +225,13 @@ export default function PatientDetails() {
           ))}
           {/* Example button to trigger value logging */}
           <div className="flex justify-end mt-5">
-            <Button onClick={handlePrint} color="blue" className="bg-blue-500" disabled={printLoading}>
-              {printLoading?"Printing...":"OK"}
+            <Button
+              onClick={handlePrint}
+              color="blue"
+              className="bg-blue-500"
+              disabled={printLoading}
+            >
+              {printLoading ? 'Printing...' : 'OK'}
             </Button>
           </div>
         </div>

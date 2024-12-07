@@ -1,6 +1,6 @@
-import { Button, Navbar } from "flowbite-react";
-import LOGO from "../assets/Teeth-12.png";
-import { useNavigate } from "react-router-dom";
+import { Button, Navbar } from 'flowbite-react';
+import LOGO from '../assets/Teeth-12.png';
+import { useNavigate } from 'react-router-dom';
 export default function NavBar() {
   const navigate = useNavigate();
   return (
@@ -8,16 +8,16 @@ export default function NavBar() {
       <Navbar.Brand href="/">
         <img src={LOGO} className="mr-3 h-11" />
         <span className="self-center whitespace-nowrap font-semibold dark:text-white text-2xl">
-          Dental Notes
+          CareTrack
         </span>
       </Navbar.Brand>
       <div className="flex md:order-2">
         <Button
           color="blue"
           className="bg-blue-500 mr-2"
-          onClick={() => navigate("/signup")}
+          onClick={() => navigate('/login')}
         >
-          Get started
+          Login
         </Button>
         {/* <Navbar.Toggle /> */}
       </div>

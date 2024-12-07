@@ -1,10 +1,10 @@
-import { Form, Link, useActionData } from "react-router-dom";
-import LOGO from "../../assets/Teeth-12.png";
-import { useEffect, useRef, useState } from "react";
-import FixedAlert from "../../components/FixedAlert";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../store/authContext";
-import { Button, Label, TextInput } from "flowbite-react";
+import { Form, Link, useActionData } from 'react-router-dom';
+import LOGO from '../../assets/Teeth-12.png';
+import { useEffect, useRef, useState } from 'react';
+import FixedAlert from '../../components/FixedAlert';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../store/authContext';
+import { Button, Label, TextInput } from 'flowbite-react';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export default function Login() {
     if (currentUser) {
       notTryToLogin();
       setLoading(false);
-      navigate("/dashboard");
+      navigate('/dashboard');
     } else {
       tryToLoginf();
     }
@@ -53,7 +53,7 @@ export default function Login() {
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
         >
           <img className="w-8 h-8 mr-2" src={LOGO} alt="logo" />
-          Dental Notes
+          CareTrack
         </Link>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -103,10 +103,10 @@ export default function Login() {
                 className="w-full transition ease-in-out bg-blue-500"
                 disabled={loading} // Disable button if loading
               >
-                {loading ? "Logging in..." : "Login"}
+                {loading ? 'Logging in...' : 'Login'}
               </Button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Don’t have an account yet?{" "}
+                Don’t have an account yet?{' '}
                 <Link
                   to="/signup"
                   className="font-medium text-blue-500 hover:underline"

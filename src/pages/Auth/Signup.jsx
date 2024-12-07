@@ -1,9 +1,9 @@
-import { Form, Link, useActionData, useNavigate } from "react-router-dom";
-import LOGO from "../../assets/Teeth-12.png";
-import { useEffect, useRef, useState } from "react";
-import FixedAlert from "../../components/FixedAlert";
-import { useAuth } from "../../store/authContext";
-import { Button, Label, TextInput } from "flowbite-react";
+import { Form, Link, useActionData, useNavigate } from 'react-router-dom';
+import LOGO from '../../assets/Teeth-12.png';
+import { useEffect, useRef, useState } from 'react';
+import FixedAlert from '../../components/FixedAlert';
+import { useAuth } from '../../store/authContext';
+import { Button, Label, TextInput } from 'flowbite-react';
 export default function Signup() {
   const navigate = useNavigate();
   const [alertId, setAlertId] = useState(0);
@@ -14,7 +14,7 @@ export default function Signup() {
   const confirmPassword = useRef();
   useEffect(() => {
     if (currentUser) {
-      navigate("/dashboard");
+      navigate('/dashboard');
     }
 
     if (actionData) {
@@ -36,7 +36,7 @@ export default function Signup() {
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
         >
           <img className="w-8 h-8 mr-2" src={LOGO} alt="logo" />
-          Dental Notes
+          CareTrack
         </Link>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -45,12 +45,7 @@ export default function Signup() {
             </h1>
             <Form className="space-y-4 md:space-y-6" method="post">
               <div>
-                <Label
-                  htmlFor="email"
-
-                >
-                  Your email
-                </Label>
+                <Label htmlFor="email">Your email</Label>
                 <TextInput
                   ref={email}
                   type="email"

@@ -8,27 +8,29 @@ import {
   Textarea,
   FileInput,
   Badge,
-} from "flowbite-react";
-import LOGO from "../assets/Teeth-12.png";
-import { useAuth } from "../store/authContext";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
-import { getUserData, updateUser } from "../util/authActions";
-import Cmodal from "./Cmodal";
-import FixedAlert from "./FixedAlert";
+  Select,
+} from 'flowbite-react';
+import LOGO from '../assets/Teeth-12.png';
+import { useAuth } from '../store/authContext';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { getUserData, updateUser } from '../util/authActions';
+import Cmodal from './Cmodal';
+import FixedAlert from './FixedAlert';
 
 export default function DashNav({ setSearchQuery }) {
   const navigate = useNavigate();
   const { logout, tryToLoginf, currentUser } = useAuth();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const file = useRef()
+  const file = useRef();
   const [userData, setUserData] = useState({
-    name: "",
-    phoneNumber: "",
-    description: "",
-    address: "",
+    name: '',
+    phoneNumber: '',
+    description: '',
+    address: '',
+    gender: '',
   });
   const [respnce, setRespnce] = useState({
     message: null,
@@ -56,10 +58,10 @@ export default function DashNav({ setSearchQuery }) {
   async function handleLogout() {
     try {
       await logout();
-      navigate("/"); // Redirect to login after logging out
+      navigate('/'); // Redirect to login after logging out
       tryToLoginf();
     } catch (error) {
-      console.error("Failed to log out:", error);
+      console.error('Failed to log out:', error);
     }
   }
 
@@ -83,7 +85,11 @@ export default function DashNav({ setSearchQuery }) {
   async function handleUpdate(e) {
     e.preventDefault();
     setLoading(true);
-    const responce = await updateUser(currentUser.uid, userData,file.current.files[0]);
+    const responce = await updateUser(
+      currentUser.uid,
+      userData,
+      file.current.files[0]
+    );
     setRespnce({
       success: responce.success,
       message: responce.message,
@@ -106,11 +112,11 @@ export default function DashNav({ setSearchQuery }) {
 
   return (
     <>
-      <Navbar fluid rounded className={"transition-all duration-300"}>
+      <Navbar fluid rounded className={'transition-all duration-300'}>
         <Navbar.Brand href="/">
-          <img src={LOGO} className="mr-0 sm:mr-3 h-11" alt="DentalDB Logo" />
+          <img src={LOGO} className="mr-0 sm:mr-3 h-11" alt="CareTrack Logo" />
           <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white sr-only sm:not-sr-only">
-            Dental Notes
+            CareTrack
           </span>
         </Navbar.Brand>
         <TextInput
@@ -135,7 +141,17 @@ export default function DashNav({ setSearchQuery }) {
               Settings
             </Dropdown.Item>
             <Dropdown.Divider />
-            <Dropdown.Item onClick={() => window.location.href = "https://github.com/AHMEDDSALIM/dentalNotes/releases/download/v1.0.0/dentalnotes-1.0.0-setup.exe"}>Download App<Badge className="ml-1" color="failure">Beta</Badge></Dropdown.Item>
+            <Dropdown.Item
+              onClick={() =>
+                (window.location.href =
+                  'https://github.com/AHMEDDSALIM/dentalNotes/releases/download/v1.0.0/dentalnotes-1.0.0-setup.exe')
+              }
+            >
+              Download App
+              <Badge className="ml-1" color="failure">
+                Beta
+              </Badge>
+            </Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item onClick={handleLogout}>Sign out</Dropdown.Item>
           </Dropdown>
@@ -169,6 +185,19 @@ export default function DashNav({ setSearchQuery }) {
               ></TextInput>
             </div>
             <div>
+              <Label>Gender</Label>
+              <Select
+                color="blue"
+                onChange={handleInput}
+                name="gender"
+                value={userData.gender}
+              >
+                <option value=""></option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </Select>
+            </div>
+            <div>
               <Label>Description</Label>
               <TextInput
                 color="blue"
@@ -200,13 +229,25 @@ export default function DashNav({ setSearchQuery }) {
             </div>
             <div>
               <Label htmlFor="logo">Logo</Label>
-              <FileInput id="logo" name="logo" ref={file} color="blue" accept="image/png"/>
+              <FileInput
+                id="logo"
+                name="logo"
+                ref={file}
+                color="blue"
+                accept="image/png"
+              />
             </div>
           </div>
           <div className="flex justify-end p-5">
             <div className="">
-              <Button type="submit" onClick={handleUpdate} disabled={loading} color="blue" className="bg-blue-500">
-                {loading ? "Saving..." : "Update"}
+              <Button
+                type="submit"
+                onClick={handleUpdate}
+                disabled={loading}
+                color="blue"
+                className="bg-blue-500"
+              >
+                {loading ? 'Saving...' : 'Update'}
               </Button>
             </div>
           </div>
