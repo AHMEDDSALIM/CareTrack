@@ -8,34 +8,51 @@ import { Button, Label, TextInput } from 'flowbite-react';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { currentUser, notTryToLogin, tryToLoginf } = useAuth();
+  const { currentUser, startAuthentication, stopAuthentication } = useAuth();
   const [alertId, setAlertId] = useState(0);
   const [loading, setLoading] = useState(false);
   const actionData = useActionData();
   const email = useRef();
   const password = useRef();
 
+  // Handle authentication state changes
   useEffect(() => {
     if (currentUser) {
-      notTryToLogin();
+      stopAuthentication();
       setLoading(false);
       navigate('/dashboard');
     } else {
-      tryToLoginf();
+      startAuthentication();
     }
-  }, [currentUser, navigate, tryToLoginf, notTryToLogin]);
+  }, [currentUser]);
 
+  // Handle form submission response
   useEffect(() => {
     if (actionData) {
       setAlertId((prevId) => prevId + 1);
       if (!actionData.success) {
         setLoading(false);
+      }else{
+        stopAuthentication();
+      setLoading(false);
+      navigate('/dashboard');
       }
     }
   }, [actionData]);
 
-  const handleSubmit = () => {
-    setLoading(true); // Start loading when the form is submitted
+  const handleSubmit = async (event) => {
+    setLoading(true);
+    try {
+      // Form will be handled by React Router's Form component
+      // Additional client-side validation could be added here
+      if (!email.current.value || !password.current.value) {
+        throw new Error('Please fill in all fields');
+      }
+    } catch (error) {
+      setLoading(false);
+      setAlertId((prevId) => prevId + 1);
+      console.error('Login error:', error);
+    }
   };
 
   return (

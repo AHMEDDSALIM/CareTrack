@@ -20,7 +20,7 @@ export default function Signup() {
     if (actionData) {
       setAlertId((prevId) => prevId + 1);
     }
-  }, [actionData, navigate, currentUser]);
+  }, [actionData,currentUser]);
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       {actionData && (

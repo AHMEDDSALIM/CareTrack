@@ -20,7 +20,7 @@ import FixedAlert from './FixedAlert';
 
 export default function DashNav({ setSearchQuery }) {
   const navigate = useNavigate();
-  const { logout, tryToLoginf, currentUser } = useAuth();
+  const { logout, startAuthentication, currentUser } = useAuth();
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -59,7 +59,7 @@ export default function DashNav({ setSearchQuery }) {
     try {
       await logout();
       navigate('/'); // Redirect to login after logging out
-      tryToLoginf();
+      startAuthentication();
     } catch (error) {
       console.error('Failed to log out:', error);
     }
@@ -158,7 +158,7 @@ export default function DashNav({ setSearchQuery }) {
         </div>
       </Navbar>
 
-      <Cmodal openModal={showModal} hideModal={hideModal} size="xl">
+      {showModal&&<Cmodal openModal={showModal} hideModal={hideModal} size="xl">
         {respnce.success && (
           <FixedAlert
             message={respnce.message}
@@ -252,7 +252,7 @@ export default function DashNav({ setSearchQuery }) {
             </div>
           </div>
         </form>
-      </Cmodal>
+      </Cmodal>}
     </>
   );
 }

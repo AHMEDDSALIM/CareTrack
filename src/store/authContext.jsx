@@ -9,54 +9,65 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [tryTologin, setTryTologin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+
   useEffect(() => {
-    var timer = null;
     const auth = getAuth();
 
+    // Subscribe to authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user && user.emailVerified) {
-        if (tryTologin) {
-          timer = setTimeout(() => {
-            setCurrentUser(user);
-          }, 2000);
-        } else {
+      try {
+        if (user && user.emailVerified) {
+          // User is signed in and email is verified
           setCurrentUser(user);
+        } else {
+          // User is either null or email not verified
+          setCurrentUser(null);
         }
-      } else {
+      } catch (error) {
+        console.error("Auth state change error:", error);
         setCurrentUser(null);
+      } finally {
+        setIsLoading(false);
       }
-      setLoading(false);
     });
 
-    return () => {
-      unsubscribe();
-      clearTimeout(timer);
-    };
-  }, [tryTologin]);
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [isAuthenticating]);
 
-  const logout = () => {
-    const auth = getAuth();
-    return signOut(auth);
+  const logout = async () => {
+    try {
+      const auth = getAuth();
+      await signOut(auth);
+      setCurrentUser(null);
+    } catch (error) {
+      console.error("Logout error:", error);
+      throw error;
+    }
   };
-  const tryToLoginf = () => {
-    setTryTologin(true);
+
+  const startAuthentication = () => {
+    setIsAuthenticating(true);
   };
-  const notTryToLogin = () => {
-    setTryTologin(false);
+
+  const stopAuthentication = () => {
+    setIsAuthenticating(false);
   };
+
   const value = {
     currentUser,
     setCurrentUser,
     logout,
-    tryToLoginf,
-    notTryToLogin,
+    startAuthentication,
+    stopAuthentication,
+    isLoading,
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {!isLoading && children}
     </AuthContext.Provider>
   );
 }
