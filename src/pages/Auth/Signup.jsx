@@ -1,9 +1,9 @@
-import { Form, Link, useActionData, useNavigate } from 'react-router-dom';
-import LOGO from '../../assets/Teeth-12.png';
-import { useEffect, useRef, useState } from 'react';
-import FixedAlert from '../../components/FixedAlert';
-import { useAuth } from '../../store/authContext';
-import { Button, Label, TextInput } from 'flowbite-react';
+import { Form, Link, useActionData, useNavigate } from "react-router-dom";
+import LOGO from "../../assets/Teeth-12.png";
+import { useEffect, useRef, useState } from "react";
+import FixedAlert from "../../components/FixedAlert";
+import { useAuth } from "../../store/authContext";
+import { Button, Label, TextInput } from "flowbite-react";
 export default function Signup() {
   const navigate = useNavigate();
   const [alertId, setAlertId] = useState(0);
@@ -14,13 +14,18 @@ export default function Signup() {
   const confirmPassword = useRef();
   useEffect(() => {
     if (currentUser) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
 
     if (actionData) {
       setAlertId((prevId) => prevId + 1);
     }
-  }, [actionData,currentUser]);
+    if (actionData && actionData.success) {
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
+    }
+  }, [actionData, currentUser]);
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       {actionData && (
@@ -95,8 +100,9 @@ export default function Signup() {
                 color="blue"
                 type="submit"
                 className="w-full text-white bg-blue-500"
+                disabled={actionData && actionData.success ? true : false}
               >
-                Sign up
+                {actionData && actionData.success ? "Redirect..." : "Sign up"}
               </Button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 You have an account?
